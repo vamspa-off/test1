@@ -22,6 +22,23 @@ UPDATE_URL = "https://raw.githubusercontent.com/vamspa-off/test1/refs/heads/main
 if os.path.exists("/opt/app/sockets/sock1.s"):
     os.remove("/opt/app/sockets/sock1.s")
 
+from datetime import datetime, timedelta
+
+async def schedule_update():
+    while True:
+        now = datetime.utcnow()
+        target_time = now.replace(hour=9, minute=30, second=0, microsecond=0)
+        
+        # Если текущее время уже позже 21:00, планируем на завтра
+        if now >= target_time:
+            target_time += timedelta(days=1)
+        
+        delay = (target_time - now).total_seconds()
+        await asyncio.sleep(delay)
+        
+        # Запуск обновления
+        await update_code()
+
 async def send_telegram_message(bot: Bot, chatid: str, message: str): # Функция отправки сообщения
     try:
         await bot.send_message(chat_id=chatid, text=message)
@@ -195,10 +212,6 @@ async def update_code():
     except Exception as e:
         print(f"Ошибка обновления: {e}")
 
-@aiocron.crontab('20 9 * * *')  # Каждый день в 21:00
-async def scheduled_update():
-    await update_code()
-
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE): # Сюда скидываются все ошибки которые невозможно обработать
     print(f"Глобальная ошибка: {context.error}")
 
@@ -209,7 +222,7 @@ def main():
     application.add_handler(CommandHandler("changepass", changepass_command))
     application.add_handler(CommandHandler("notchange", notchange_command))
     
-    scheduled_update.start()
+    loop.create_task(schedule_update())
 
     application.add_error_handler(error_handler) # обработчик ошибок
     
