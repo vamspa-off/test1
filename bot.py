@@ -1,4 +1,4 @@
-# 1
+# 2
 # Библиотеки
 import socket
 import asyncio
