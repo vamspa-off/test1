@@ -1,3 +1,4 @@
+# 1
 # Библиотеки
 import socket
 import asyncio
@@ -16,7 +17,7 @@ MYSQL_HOST = "localhost"
 MYSQL_USER = "site"
 MYSQL_PASSWORD = "E3KrVXH8cgGY2DMk9njuxz"
 MYSQL_DB = "media_1511"
-UPDATE_URL = ""
+UPDATE_URL = "https://raw.githubusercontent.com/vamspa-off/test1/refs/heads/main/bot.py"
 
 if os.path.exists("/opt/app/sockets/sock1.s"):
     os.remove("/opt/app/sockets/sock1.s")
